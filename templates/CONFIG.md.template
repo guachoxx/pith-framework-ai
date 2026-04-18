@@ -1,0 +1,26 @@
+# Memory Configuration
+> Per-user, per-machine. This file is gitignored — do not commit.
+> See `providers/` for available providers and setup instructions.
+
+## User
+current_user: {{CURRENT_USER}}
+
+## Provider
+provider: {{PROVIDER}}
+# Options: markdown-files, clickup, notion
+
+## Connection
+# For markdown-files provider, no connection settings needed.
+
+# For ClickUp:
+# mcp_server: clickup
+# space_name: Pith Memory
+# reference_folder: Reference
+# projects_folder: Projects
+# project_index_list: Project Index
+
+# For Notion:
+# mcp_server: notion
+# teamspace_name: Pith Memory
+# reference_database: Reference
+# project_index_database: Project Index

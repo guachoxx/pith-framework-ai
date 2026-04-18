@@ -1,0 +1,43 @@
+# Build Commands — {{PROJECT_NAME}}
+
+> How to build, run, test, and deploy this project. Keep commands copy-paste-ready — the agent consults this file before running builds.
+
+## Prerequisites
+
+(Runtime versions, global tools, env variables. Example:
+- Node.js 20+
+- pnpm 9+
+- PostgreSQL 16 running locally on port 5432
+- `.env` file with DB credentials — see `CREDENTIALS.md`)
+
+## Build
+
+```bash
+# (Command to compile/bundle for production)
+```
+
+## Local Run
+
+```bash
+# (Command to start the app locally for development, with hot reload if applicable)
+```
+
+## Tests
+
+```bash
+# (Unit tests)
+
+# (Integration tests)
+
+# (End-to-end tests)
+```
+
+## Deploy
+
+(Command or process to deploy to staging/production. If the process is multi-step or human-in-the-loop, list the steps. If fully automated in CI, reference the pipeline config.)
+
+## Useful Scripts
+
+(Scripts in `pith-framework/scripts/permanent/` with one-line description each. Example:
+- `scripts/permanent/seed-dev-db.sh` — resets the dev database and loads sample data
+- `scripts/permanent/regenerate-types.sh` — regenerates TypeScript types from the Prisma schema)

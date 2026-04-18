@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Grep|Glob",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Advisory (non-blocking reminder): per the docs-before-code invariant, if this Grep/Glob targets an area covered by a resource_hint in METHODOLOGY.yaml (architecture, modules, build/test docs, API mappings, etc.), consider loading that doc first so the search runs with full context. This reminder fires on every Grep/Glob — ignore if you've already loaded relevant docs, or if no hint applies (e.g. validation, post-edit checks, exploring an unfamiliar repo).",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Context is about to be compacted. Check: is there a Pith Framework project active in this session? If yes, has the session work been distilled (was /pith-consolidate run, or is CURRENT_STATUS up to date)? If undistilled work exists, warn: 'Session work has not been distilled. Consider running /pith-consolidate before continuing, or undistilled details may be lost after compaction.' Always allow compaction to proceed — this is a reminder, not a gate.",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/notify.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+# Lessons Learned — {{PROJECT_NAME}}
+
+> Reusable technical findings discovered while working on this project. Add a lesson when you spend non-trivial time solving something that a future session would benefit from knowing up front.
+>
+> **Pruning**: if a lesson is specific to a single module, consider moving it to that module's context file (`{module}/CLAUDE.md`) after ~30 days. Keep here only what is cross-cutting or generic.
+>
+> **Categories below are suggestions** — add or remove sections to match your stack.
+
+## Concurrency
+
+(Thread-safety findings, race conditions discovered, locking patterns that worked or didn't.)
+
+## API / Networking
+
+(Rate limits that bite in practice, retry patterns, auth edge cases, API quirks.)
+
+## SQL / Database
+
+(Query patterns that unexpectedly slow down, indexing discoveries, migration gotchas, transaction scope issues.)
+
+## Configuration
+
+(Environment variables that must be set, non-obvious defaults, config conflicts between environments.)
+
+## Deployment
+
+(Rollout traps, cache invalidation, DNS propagation, versioning mistakes, rollback procedures learned the hard way.)
+
+## Code Patterns
+
+(Generic patterns or anti-patterns in this codebase worth documenting for reuse or avoidance.)
+
+---
+
+## Template for a new lesson
+
+```markdown
+### (Short descriptive title)
+
+**Context**: When does this apply?
+**Finding**: What did we discover?
+**Example**: Minimal reproducer or code snippet.
+**Action**: What to do / avoid going forward.
+**Date**: YYYY-MM-DD
+```

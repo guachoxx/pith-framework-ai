@@ -1,0 +1,23 @@
+[
+  {"query": "arranca", "should_trigger": true},
+  {"query": "boot", "should_trigger": true},
+  {"query": "inicia sesion", "should_trigger": true},
+  {"query": "start working", "should_trigger": true},
+  {"query": "let's begin", "should_trigger": true},
+  {"query": "carga el contexto del proyecto", "should_trigger": true},
+  {"query": "I want to work on the actualizador-giata project", "should_trigger": true},
+  {"query": "abre el proyecto DEV-496", "should_trigger": true},
+  {"query": "necesito cargar CONFIG.md y METHODOLOGY.yaml", "should_trigger": true},
+  {"query": "load the pith framework", "should_trigger": true},
+
+  {"query": "en que estamos", "should_trigger": false},
+  {"query": "cual es el siguiente paso", "should_trigger": false},
+  {"query": "show me the status", "should_trigger": false},
+  {"query": "consolida el progreso", "should_trigger": false},
+  {"query": "guarda lo que llevamos", "should_trigger": false},
+  {"query": "fix the bug in pcDISPONGO", "should_trigger": false},
+  {"query": "compile the project", "should_trigger": false},
+  {"query": "run the tests", "should_trigger": false},
+  {"query": "what files are in src/Web?", "should_trigger": false},
+  {"query": "explain this SQL query", "should_trigger": false}
+]

@@ -1,0 +1,23 @@
+[
+  {"query": "en que estamos", "should_trigger": true},
+  {"query": "donde estamos", "should_trigger": true},
+  {"query": "what is the status", "should_trigger": true},
+  {"query": "que falta", "should_trigger": true},
+  {"query": "siguiente paso", "should_trigger": true},
+  {"query": "show me actualizador-giata status", "should_trigger": true},
+  {"query": "how far along are we", "should_trigger": true},
+  {"query": "que queda por hacer", "should_trigger": true},
+  {"query": "cual es el siguiente paso", "should_trigger": true},
+  {"query": "what's left to do on this project", "should_trigger": true},
+
+  {"query": "arranca", "should_trigger": false},
+  {"query": "boot", "should_trigger": false},
+  {"query": "inicia sesion", "should_trigger": false},
+  {"query": "consolida", "should_trigger": false},
+  {"query": "guarda el progreso", "should_trigger": false},
+  {"query": "fix the login form", "should_trigger": false},
+  {"query": "show me the projects", "should_trigger": false},
+  {"query": "add a new column to the table", "should_trigger": false},
+  {"query": "what is the architecture of the booking API", "should_trigger": false},
+  {"query": "run MSBuild on the solution", "should_trigger": false}
+]

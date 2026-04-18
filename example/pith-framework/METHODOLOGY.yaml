@@ -1,0 +1,303 @@
+# Methodology Manifest — Default
+# Framework v2 — Contract fields: identity, work_unit, states, distillation (required)
+# See ENGINE.md §6 for contract specification
+
+identity:
+  name: default
+  version: 1.1
+  description: Standard methodology — 7 flexible artifacts, 6 states, phase-based distillation
+
+work_unit:
+  label: project
+  entry_point: CURRENT_STATUS
+  entry_point_fields:
+    - last_updated
+    - last_session_summary
+    - next_step
+    - done_when
+
+states:
+  values:
+    - { name: PLANNING, type: active }
+    - { name: IN_PROGRESS, type: active }
+    - { name: TESTING, type: active }
+    - { name: READY, type: active }
+    - { name: ON_HOLD, type: active }
+    - { name: RELEASED, type: completed }
+
+artifacts:
+  standard:
+    # Contract fields only: name, required.
+    # Close-protocol behaviour (which survive, which are discarded) lives in
+    # conventions.close_protocol below — it is methodology-specific, not engine contract.
+    - { name: CURRENT_STATUS, required: true }
+    - { name: SPECIFICATIONS, required: false }
+    - { name: TECHNICAL_ANALYSIS, required: false }
+    - { name: PLAN, required: false }
+    - { name: CHANGELOG, required: false }
+    - { name: TECHNICAL_REPORT, required: false }
+    - { name: TESTING, required: false }
+
+distillation:
+  triggers:
+    # Reliable — observable externally by the agent
+    - user_request        # Engine invariant — always available
+    - block_completed     # After completing a significant block of work
+    - topic_change        # Before switching from analysis to coding or vice versa
+    # Best-effort — relies on the agent self-estimating its context window,
+    # which LLMs do unreliably. May fire late or erratically. Keep as a nudge,
+    # not as the primary mechanism; prefer block_completed / topic_change.
+    - context_filling
+  always_update: [CURRENT_STATUS]
+
+# === FREE ZONE (conventions) ===
+# Everything below is methodology-specific. The engine ignores it but preserves it.
+# The agent operating under this methodology uses these conventions.
+
+conventions:
+  documentation_language: EN
+
+  naming:
+    reference_docs: UPPER_CASE
+    work_units: kebab-case
+    scripts: snake_case
+
+  work_modes:
+    ad_hoc:
+      description: "Work tracked in the external platform (ticket/task)"
+      when: "Fix, adjustment, small change completable in 1-2 sessions without structured analysis"
+      tracking: external_ticket
+      distillation: "Only reference documents (LESSONS_LEARNED, BUILD_COMMANDS, etc.) and module context"
+      promote_to_project: "If it reveals complexity, requires structured analysis, or extends >2 sessions"
+    project:
+      description: "Work with project container and structured artifacts"
+      when: "Features, integrations, refactors requiring analysis, planning, or multi-session work"
+      tracking: project_container
+      required_artifacts: [CURRENT_STATUS]
+      optional_artifacts: [SPECIFICATIONS, TECHNICAL_ANALYSIS, PLAN, CHANGELOG, TECHNICAL_REPORT, TESTING]
+
+  staleness:
+    threshold_hours: 48
+    action: ask_user_before_assuming_valid
+    # If entry_point last_updated > threshold, ask user if info is still valid
+
+  lessons_learned:
+    prune_threshold: 30   # Days before considering moving to module context
+    prune_action: move_to_module_context
+    categories: [Concurrency, API/Networking, SQL, Configuration, Deployment, Code patterns]
+
+  module_context_template:
+    sections: [What this is, Dependencies, Key patterns, Files, Watch out]
+    max_lines: 50
+    notes:
+      - "Direct, imperative language: 'Always use X', 'Never do Y'"
+      - "Only info the agent needs to work with the code — no history or changelogs"
+      - "Dependencies section is critical for frameworks with legacy APIs"
+
+  cross_referencing:
+    rule: "Before creating something new, read an existing equivalent first"
+    examples: [new provider, new form, new endpoint, new module]
+
+  close_protocol:
+    rule: "Only artifacts listed in `survives` are preserved when a work unit closes. All others are discarded. Artifacts in `survives_if_present` are preserved only when they exist and have content."
+    survives:
+      - TECHNICAL_REPORT                        # Always preserved as deliverable
+    survives_if_present:
+      - CHANGELOG                               # Preserved only if it has content
+    discarded:
+      - CURRENT_STATUS
+      - SPECIFICATIONS
+      - TECHNICAL_ANALYSIS
+      - PLAN
+      - TESTING
+    actions:
+      technical_report: maintain_as_deliverable   # → docs/ or permanent location
+      changelog: move_to_changelog_root_if_applies
+      project_folder: delete
+      module_context: maintain_always             # Code context, not project context
+
+  entry_point_format:
+    template: |
+      **Last updated**: YYYY-MM-DD
+      **Last session summary**: [1-2 sentences]
+      **Next step**: [Concrete action to resume — not "continue development"]
+      **Done when**: [Verifiable condition — a command, a result, a test]
+
+      ## Done
+      - ✅ Completed items (cumulative)
+
+      ## In Progress
+      - 🔄 Partially done + exact state
+
+      ## Next Steps
+      - [ ] Pending, ordered by priority
+
+      ## Blockers
+      - (if any)
+    quality_rules:
+      next_step: "Must be concrete enough to resume without asking questions"
+      done_when: "Must be verifiable: a command, a result, a test that passes"
+
+  persistence_rules:
+    - "Reusable technical finding → LESSONS_LEARNED"
+    - "New useful command → BUILD_COMMANDS or scripts/"
+    - "New pattern/trap for a module → module's context file"
+    - "Module architecture/patterns/deps changed → update module context (mandatory)"
+    - "Never duplicate — cross-reference with relative paths"
+    - "New credentials → CREDENTIALS (gitignored)"
+    - "Operational debugging guides → TESTING_METHODOLOGY"
+    - "**MANDATORY**: when creating new projects, consult the configured persistence provider's documentation (MAPPING.md, SETUP.md) to ensure project documents are created in the correct location, with the correct format, and updated according to persistence rules."
+
+  artifact_content_guide:
+    CURRENT_STATUS:
+      question: "Where are we now?"
+      contains: [completed items, in-progress state, next step, blockers]
+    SPECIFICATIONS:
+      question: "What is requested?"
+      contains: [requirements, acceptance criteria, scope boundaries]
+    TECHNICAL_ANALYSIS:
+      question: "What are we working with?"
+      contains:
+        - "Existing code involved: modules, classes, patterns, dependencies"
+        - "Relevant data structures (tables, models, relationships)"
+        - "Discovered constraints and limitations"
+        - "Design decisions prior to development"
+        - "If API integration: endpoints, auth, rate limits, field-to-field mappings"
+        - "Impact map (recommended): files touched, tables, libraries"
+    PLAN:
+      question: "What are we going to do?"
+      contains:
+        - "Ordered phases with description and dependencies"
+        - "Files to create or modify per phase"
+        - "DB changes needed (tables, stored procedures, views, migrations)"
+        - "Implementation-specific considerations per phase"
+    CHANGELOG:
+      question: "What changed and when?"
+      contains: [code changes with files and reason, dates]
+    TECHNICAL_REPORT:
+      question: "What did we build?"
+      contains:
+        - "Files created, classes, methods, constants"
+        - "Technical decisions made and their rationale"
+        - "Project-specific lessons learned"
+        - "File structure of the developed component"
+        - "Deployment notes (optional)"
+    TESTING:
+      question: "How do we validate?"
+      contains: [test plan, test cases, environment comparison, validation results]
+
+  routing:
+    - { info: "What a module does, patterns, traps", target: "module context" }
+    - { info: "Prior analysis, mappings, constraints", target: TECHNICAL_ANALYSIS }
+    - { info: "Phase plan, files, order", target: PLAN }
+    - { info: "Deliverable technical documentation", target: TECHNICAL_REPORT }
+    - { info: "Project state, next step", target: CURRENT_STATUS }
+    - { info: "Project change history", target: CHANGELOG }
+    - { info: "Requirements, acceptance criteria", target: SPECIFICATIONS }
+    - { info: "Test plan, results", target: TESTING }
+    - { info: "Reusable technical lessons", target: LESSONS_LEARNED }
+    - { info: "Credentials and endpoints", target: CREDENTIALS }
+    - { info: "Build commands", target: BUILD_COMMANDS }
+    - { info: "Global system architecture", target: ARCHITECTURE }
+
+  distillation_checklist:
+    analysis:
+      - { target: TECHNICAL_ANALYSIS, priority: primary, write: "findings, existing code, constraints, design decisions" }
+      - { target: SPECIFICATIONS, priority: if_applies, write: "discovered requirements, acceptance criteria" }
+      - { target: CURRENT_STATUS, priority: always, write: "Analysis of X completed, still need to analyze Y" }
+    planning:
+      - { target: PLAN, priority: primary, write: "phases, files, order, dependencies, DB changes" }
+      - { target: TECHNICAL_ANALYSIS, priority: if_applies, write: "enrich if new findings emerged during planning" }
+      - { target: CURRENT_STATUS, priority: always, write: "Plan completed, next step: implement phase N" }
+    development:
+      - { target: CURRENT_STATUS, priority: always, write: "what was done, what remains, concrete next step" }
+      - { target: TECHNICAL_REPORT, priority: primary, write: "classes, methods, technical decisions" }
+      - { target: CHANGELOG, priority: if_changes, write: "concrete changes with files and reason" }
+      - { target: LESSONS_LEARNED, priority: if_applies, write: "only if reusable across projects" }
+      - { target: "module context", priority: mandatory_if_modified, write: "patterns, traps, dependencies updated" }
+    testing:
+      - { target: TESTING, priority: primary, write: "test results, environment comparison, issues found" }
+      - { target: TECHNICAL_REPORT, priority: if_applies, write: "update with testing corrections" }
+      - { target: CURRENT_STATUS, priority: always, write: "testing status, next step" }
+
+  entry_point_examples:
+    next_step:
+      bad:
+        - "Continue with phase 3"
+        - "Keep working on the project"
+      good:
+        - "Implement UserAuth.py: override validate_token with JWT verification, endpoint POST /auth/refresh"
+        - "Add shipping_cost column to orders table and map in OrderService.calculate_total()"
+    done_when:
+      bad:
+        - "When it's ready"
+        - "When it works"
+      good:
+        - "Build succeeds + run checkout flow in staging and get order confirmation with correct total"
+        - "Migration runs without error + field visible in admin panel with correct value"
+
+  resource_hints:
+    # What to load BEFORE acting, based on task type.
+    # Prevents the agent from guessing when documented info exists.
+    # See ENGINE.md §5: "lazy loading with explicit trigger"
+    # RULE: Evaluate ALL hints against the request. If multiple match, load ALL before acting.
+    - when: "database query, SQL, table structure, field lookup, schema, foreign keys, relationships between tables"
+      load: "data_model/{relevant_category}"
+      how: "Match keywords in the request to categories defined in SYSTEM.yaml"
+      note: "Always before executing any SELECT or inspecting tables directly"
+    - when: "working on a code module"
+      load: "{module}/CLAUDE.md"
+      how: "Already documented in boot sequence"
+    - when: "external API integration, endpoints, field mappings"
+      load: "docs/ for the corresponding provider"
+      how: "Look up the external service under docs/ by its provider name"
+    - when: "build, compile, run, deploy, package, CI/CD"
+      load: BUILD_COMMANDS
+      how: "Reference document in the provider"
+    - when: "testing, debugging, comparing environments, validating changes, test suite"
+      load: TESTING_METHODOLOGY
+      how: "Reference document in the provider"
+    - when: "understand system architecture, component flow, layers, core patterns, cross-component interaction"
+      load: ARCHITECTURE
+      how: "Reference document in the provider (may be split into sub-pages — load only the relevant sub-page)"
+      note: "When ARCHITECTURE is split into sub-pages, the index page routes to them — load only the sub-page that applies, not all of them."
+    - when: "connect to service, endpoint, credentials, connection string, API key"
+      load: CREDENTIALS
+      how: "Reference document in the provider (sensitive: true)"
+      note: "Read only when needed — do not cache in context"
+    - when: "implement a feature, fix a bug, refactor in an area with known pitfalls, concurrency, thread-safety"
+      load: LESSONS_LEARNED
+      how: "Reference document in the provider — search by relevant category"
+    - when: "run an existing script, extract logs, performance analysis, pre-built tools"
+      load: "pith-framework/scripts/permanent/"
+      how: "List directory contents — contains reusable, tested scripts"
+      note: "Always check if a script already exists before writing a new one"
+    - when: "create methodology, modify methodology, configure framework, set up Pith Framework, new memory provider"
+      load: "pith-framework/framework/ENGINE.md"
+      how: "On-disk framework kernel document"
+
+  workspace_rules:
+    temp_directory: "pith-framework/temp/"
+    temp_rule: "ALL temporary files (session scripts, intermediate outputs, analysis CSVs) MUST be written to this directory. Never write temp files to the project root or other locations."
+    scripts_permanent: "pith-framework/scripts/permanent/"
+    scripts_rule: "Before writing a new script, check if one already exists in scripts/permanent/. New reusable scripts go here; one-time scripts go to temp/."
+
+  provider_operations:
+    strategy: "Separate reads (main agent) from writes (subagents)"
+    read:
+      executor: main_agent
+      reason: "The main agent needs first-hand information to make decisions"
+    write:
+      executor: subagents
+      mode: parallel
+      reason: "The main agent already knows the content; delegating writes frees context and speeds up execution"
+      examples:
+        - "Update CURRENT_STATUS + CHANGELOG in parallel"
+        - "Create new project artifacts"
+        - "Update task status in the provider"
+
+  anti_patterns:
+    - "Never save conversations as .docx for memory"
+    - "Never ask the agent to read past session transcripts"
+    - "If a transcript has valuable info → distill to .md and discard"
+    - "Never read all files in a log directory at once — read only the specific file being debugged. Bulk log loading floods the context."

@@ -1,0 +1,51 @@
+# Methodology Manifest — OpenSpec (Spec Driven Development)
+# Framework v2 — Contract fields: identity, work_unit, states, distillation (required)
+# See ENGINE.md §6 for contract specification
+
+identity:
+  name: openspec
+  version: 1.0
+  description: Spec Driven Development with validation against acceptance criteria
+
+work_unit:
+  label: spec
+  entry_point: SPEC_STATUS
+  entry_point_fields:
+    - last_updated
+    - next_step
+    - acceptance_status
+
+states:
+  values:
+    - { name: DRAFTING, type: active }
+    - { name: REVIEWING, type: active }
+    - { name: IMPLEMENTING, type: active }
+    - { name: VALIDATING, type: active }
+    - { name: ACCEPTED, type: completed }
+    - { name: REJECTED, type: completed }
+
+artifacts:
+  standard:
+    - { name: SPEC_STATUS, required: true }
+    - { name: FEATURE_SPEC, required: true }
+    - { name: ACCEPTANCE_CRITERIA, required: true }
+    - { name: IMPLEMENTATION_NOTES, required: false }
+    - { name: VALIDATION_REPORT, required: true }
+
+distillation:
+  triggers:
+    - user_request
+    - spec_change
+    - validation_complete
+  targets_by_phase:
+    drafting: [FEATURE_SPEC, ACCEPTANCE_CRITERIA, SPEC_STATUS]
+    reviewing: [FEATURE_SPEC, SPEC_STATUS]
+    implementing: [IMPLEMENTATION_NOTES, SPEC_STATUS]
+    validating: [VALIDATION_REPORT, SPEC_STATUS]
+  always_update: [SPEC_STATUS]
+
+conventions:
+  spec_format: gherkin
+  decomposition: user_stories
+  validation: automated_tests_first
+  documentation_language: EN

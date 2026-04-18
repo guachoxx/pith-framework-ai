@@ -1,0 +1,8 @@
+{
+  "name": "pith-framework",
+  "description": "Pith Framework extensions: structured project memory protocol for LLM agents.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Eugenio Ruiz de la Cuesta (guachoxx)"
+  }
+}

@@ -1,0 +1,13 @@
+# Memory framework — local/sensitive files
+pith-framework/CONFIG.md
+pith-framework/CREDENTIALS.md
+pith-framework/PROVIDER_CACHE.md
+pith-framework/logs/
+pith-framework/temp/
+.claude/
+
+# scripts/ root is for one-off session scripts (transient per METHODOLOGY workspace_rules).
+# Only scripts/permanent/ contains reusable tested utilities — that subdir IS versioned.
+pith-framework/scripts/*
+!pith-framework/scripts/permanent/
+!pith-framework/scripts/permanent/**

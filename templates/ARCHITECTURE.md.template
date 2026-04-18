@@ -1,0 +1,27 @@
+# Architecture — {{PROJECT_NAME}}
+
+> System-level documentation. Describe the structure, components, and key design decisions of this project. Keep it current as the system evolves.
+
+## System Overview
+
+(Brief description of what the system does and its major layers. 3–6 sentences.)
+
+## Layers / Components
+
+(List the top-level modules, services, or layers and their responsibilities. For each: name, role, what it depends on.)
+
+## Data Model
+
+(Key tables, entities, or data structures and their relationships. For a large model, link to a separate `data_model/` directory instead of inlining everything here.)
+
+## Key Architectural Patterns
+
+(Patterns this codebase follows: event-driven, CQRS, hexagonal, layered, microservices, etc. Include the "why" — what trade-off each pattern resolves.)
+
+## External Integrations
+
+(Third-party APIs, services, and how they're used. For each: service name, purpose, auth method, rate limits or quotas.)
+
+## Cross-cutting Concerns
+
+(Logging, error handling, observability, security, i18n — anything that spans multiple components.)

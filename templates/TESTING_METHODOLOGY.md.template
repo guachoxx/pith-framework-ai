@@ -1,0 +1,42 @@
+# Testing Methodology — {{PROJECT_NAME}}
+
+> Testing strategy, environments, and debugging guides. The agent consults this before running tests or diagnosing failures.
+
+## Strategy
+
+(Unit / integration / end-to-end split, coverage targets, approach. Example:
+- Unit tests for pure functions and business logic — target 80% coverage
+- Integration tests for API endpoints with real DB (ephemeral)
+- E2E tests for critical user journeys only — budgeted for CI time)
+
+## How to Run Tests
+
+(See `BUILD_COMMANDS.md` for the literal commands. This section documents *when* to run what:
+- Pre-commit: lint + unit tests
+- Pre-push: above + integration
+- CI: all tiers)
+
+## Environments
+
+| Environment | Purpose | Data |
+|-------------|---------|------|
+| `local` | Developer workstation | Seed data from `scripts/permanent/seed-dev-db.sh` |
+| `ci` | Continuous integration | Ephemeral, reset per job |
+| `staging` | Pre-production validation | Production-like, sanitized |
+| `production` | Live | Real |
+
+## Test Data
+
+(How fixtures/seed data are managed. Where they live. How to reset state between test runs.)
+
+## Debugging Guides
+
+### Common Failure Modes
+
+(List known failure patterns as you discover them — each one saves future time.)
+
+1. **(Failure description)** — How to diagnose and fix.
+
+### Useful Diagnostic Commands
+
+(Bash/SQL/CLI snippets for quick inspection during debugging.)

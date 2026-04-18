@@ -1,0 +1,59 @@
+# System Knowledge Template (Layer 3)
+# Copy this file to your project as `pith-framework/SYSTEM.yaml` and adapt.
+# SYSTEM.yaml is an index — it tells the agent what documentation exists and where to find it.
+# It does NOT contain the documentation itself.
+
+identity:
+  name: "{{PROJECT_NAME}}"
+  description: "{{DESCRIPTION}}"
+  stack: "{{STACK}}"
+
+# Reference documents — system-level documentation (Tier 2)
+# `documents` is a flat list. Each entry may optionally declare `suggested_sections`
+# (headings the agent should expect inside that document), a `path` (markdown-files
+# provider) or a `location` (hybrid provider reference).
+documents:
+  - name: ARCHITECTURE
+    description: System architecture, modules, dependencies, data model
+    # path: pith-framework/ARCHITECTURE.md            # markdown-files provider
+    # location: "ClickUp > Reference > ARCHITECTURE"  # clickup provider
+    # suggested_sections: [System overview, Components, Data model, Key patterns]
+
+  - name: BUILD_COMMANDS
+    description: Build, run, test, deploy commands
+    # path: pith-framework/BUILD_COMMANDS.md
+
+  - name: TESTING_METHODOLOGY
+    description: Testing strategy, environments, debugging guides
+    # path: pith-framework/TESTING_METHODOLOGY.md
+
+  - name: CREDENTIALS
+    description: API keys, endpoints, service accounts (gitignored)
+    # path: pith-framework/CREDENTIALS.md
+
+  - name: LESSONS_LEARNED
+    description: Reusable technical findings across projects
+    # path: pith-framework/LESSONS_LEARNED.md
+
+# Module context — code-level documentation (Tier 3)
+# One file per code module, co-located with the code.
+module_context:
+  pattern: "{module}/CLAUDE.md"
+  max_lines: 50
+  sections:
+    - What this is
+    - Dependencies
+    - Key patterns
+    - Files
+    - Watch out
+
+# Data model — key database tables and relationships (optional)
+# Useful for the agent to understand the domain model.
+data_model:
+  # tables:
+  #   - name: users
+  #     key_columns: [id, email, role]
+  #     relationships: "1:N with orders, 1:1 with profile"
+  #   - name: orders
+  #     key_columns: [id, user_id, status, total]
+  #     relationships: "N:1 with users, 1:N with order_items"

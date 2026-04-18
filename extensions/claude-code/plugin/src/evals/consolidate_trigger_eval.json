@@ -1,0 +1,23 @@
+[
+  {"query": "consolida", "should_trigger": true},
+  {"query": "consolidate", "should_trigger": true},
+  {"query": "destila", "should_trigger": true},
+  {"query": "distill", "should_trigger": true},
+  {"query": "guarda el progreso", "should_trigger": true},
+  {"query": "save progress", "should_trigger": true},
+  {"query": "save what we have so far", "should_trigger": true},
+  {"query": "guarda lo que llevamos", "should_trigger": true},
+  {"query": "antes de terminar, guarda", "should_trigger": true},
+  {"query": "we're switching topics, save first", "should_trigger": true},
+
+  {"query": "guarda este archivo en disco", "should_trigger": false},
+  {"query": "save this file", "should_trigger": false},
+  {"query": "write the changes to config.txt", "should_trigger": false},
+  {"query": "arranca", "should_trigger": false},
+  {"query": "boot", "should_trigger": false},
+  {"query": "en que estamos", "should_trigger": false},
+  {"query": "show me the status", "should_trigger": false},
+  {"query": "fix the SQL procedure", "should_trigger": false},
+  {"query": "create a backup of the database", "should_trigger": false},
+  {"query": "commit the changes", "should_trigger": false}
+]
