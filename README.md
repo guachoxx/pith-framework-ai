@@ -22,10 +22,6 @@ See the [example/](example/) directory for a real project mid-execution if you w
 
 `AGENTS.md` is the entry point — this framework is everything that comes after it: structured memory, lifecycle management, distillation protocol, and cross-session continuity.
 
-## Why not Mem0 / Letta?
-
-Mem0 and Letta manage semantic memory automatically; this framework manages **structured project memory** with explicit lifecycle and distillation protocol. They're complementary — Mem0/Letta handle "what the agent remembers," Pith handles "what the team knows about the project."
-
 ## Three Axes of Agnosticism
 
 | Axis | What it means | Examples |
