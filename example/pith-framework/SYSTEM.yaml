@@ -2,17 +2,17 @@
 
 identity:
   name: shopfast
-  description: E-commerce platform — Node.js 20 + Express + PostgreSQL 16
+  description: E-commerce platform
+  stack: Node.js 20 + Express + PostgreSQL 16
 
 documents:
-  suggested_sections:
-    - name: ARCHITECTURE
-      description: System architecture, modules, dependencies, data model
-      path: pith-framework/ARCHITECTURE.md
+  - name: ARCHITECTURE
+    description: System architecture, modules, dependencies, data model
+    path: pith-framework/ARCHITECTURE.md
 
-    - name: LESSONS_LEARNED
-      description: Reusable technical findings across projects
-      path: pith-framework/LESSONS_LEARNED.md
+  - name: LESSONS_LEARNED
+    description: Reusable technical findings across projects
+    path: pith-framework/LESSONS_LEARNED.md
 
 module_context:
   pattern: "{module}/CLAUDE.md"

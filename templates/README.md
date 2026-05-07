@@ -27,6 +27,7 @@ Ready-to-copy templates for adopting Pith Framework in your project. Each `.temp
 | `TESTING_METHODOLOGY.md.template` | `pith-framework/TESTING_METHODOLOGY.md` | Testing strategy, environments, debugging |
 | `CREDENTIALS.md.template` | `pith-framework/CREDENTIALS.md` *(gitignored)* | API keys, connection strings, service accounts |
 | `LESSONS_LEARNED.md.template` | `pith-framework/LESSONS_LEARNED.md` | Reusable technical findings from the project |
+| `PROJECT_INDEX.md.template` | `pith-framework/projects/_INDEX.md` | Empty work unit index for markdown-files provider |
 
 ## About SYSTEM.yaml
 

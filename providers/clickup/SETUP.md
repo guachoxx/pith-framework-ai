@@ -116,6 +116,8 @@ The Project Index must have statuses matching the framework's project lifecycle.
 
 > **Note**: You can configure these at the Space level (applies to all Lists) or at the List level (override for Project Index only). Space-level is simpler if you don't use other Lists with different statuses.
 
+Fast-path boot/status uses Project Index task metadata for `Last updated` (ClickUp's native updated timestamp). Keep the Project Index task updated when the project's entry point changes so no-argument status can sort projects without reading every project Doc Page.
+
 **c) Creating projects**
 
 Each project is a **Doc** (not a Folder) inside the Projects folder. The agent creates these via MCP tools:

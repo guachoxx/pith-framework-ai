@@ -36,6 +36,9 @@ their-workspace/
     ├── TESTING_METHODOLOGY.md             ← empty skeleton (committed)
     ├── CREDENTIALS.md                     ← empty skeleton (gitignored)
     ├── LESSONS_LEARNED.md                 ← empty skeleton (committed)
+    ├── projects/
+    │   └── {current_user}/
+    │       └── _INDEX.md                  ← user's work unit index (markdown-files provider)
     ├── framework/
     │   └── ENGINE.md                      ← framework kernel (committed)
     └── providers/                         ← all three providers copied; active one selected via CONFIG.md
@@ -98,14 +101,19 @@ Ask the user for the connection settings appropriate to their provider. For deta
 
 Always tell the user explicitly: API tokens go into `pith-framework/CONFIG.md`, which is gitignored. **Never commit them.**
 
-### Q5. Multi-user mode
+### Q5. User identity and ownership mode
 
 Ask:
+- "What user identity should the framework put in `pith-framework/CONFIG.md` as `current_user`? Use the name/handle this agent should use for project ownership."
 - "Will multiple people use this agent on this codebase, with per-user project ownership?"
 
-If **no** (the default): proceed.
+Always save the identity as `current_user`. `CONFIG.md` always defines `current_user`, even for single-user installs.
 
-If **yes**: ask for the user's identity as it should appear in the provider (e.g., display name in ClickUp/Notion). Save as `current_user`.
+If **no** to multi-user mode (the default): proceed. This is still a single-user namespace named after `current_user`.
+
+If **yes**: keep the same `current_user` value for this user. Other users will have their own gitignored `CONFIG.md` and their own provider/user namespace.
+
+For `markdown-files`, any defined `current_user` means the boot path is `pith-framework/projects/{current_user}/_INDEX.md`. Therefore bootstrap must create that index for both single-user and multi-user installs.
 
 ### Q6. Source of framework templates
 
@@ -138,16 +146,17 @@ Present a concrete plan to the user in plain language. Example:
 > 5. `pith-framework/SYSTEM.yaml` (your documentation index, with your project info)
 > 6. `pith-framework/framework/ENGINE.md` (framework kernel)
 > 7. `pith-framework/ARCHITECTURE.md`, `BUILD_COMMANDS.md`, `TESTING_METHODOLOGY.md`, `CREDENTIALS.md` (gitignored), `LESSONS_LEARNED.md` — empty reference-document skeletons ready to fill in as your project grows
-> 8. `pith-framework/providers/markdown-files/` — `MAPPING.md`, `SETUP.md`
-> 9. `pith-framework/providers/clickup/` — `MAPPING.md`, `MAPPING_BOOT.md`, `SETUP.md`
-> 10. `pith-framework/providers/notion/` — `MAPPING.md`, `MAPPING_BOOT.md`, `SETUP.md`
+> 8. If provider is `markdown-files`: `pith-framework/projects/{current_user}/_INDEX.md`
+> 9. `pith-framework/providers/markdown-files/` — `MAPPING.md`, `SETUP.md`
+> 10. `pith-framework/providers/clickup/` — `MAPPING.md`, `MAPPING_BOOT.md`, `SETUP.md`
+> 11. `pith-framework/providers/notion/` — `MAPPING.md`, `MAPPING_BOOT.md`, `SETUP.md`
 >
 > All three providers are copied. The active provider is determined by `pith-framework/CONFIG.md` at runtime — only its docs are read at boot. The other providers stay on disk so you can switch later by editing `CONFIG.md` (no need to re-run this bootstrap).
 >
 > **Files I'll modify or create:**
 > - `.gitignore` — append framework-specific entries (CONFIG.md, PROVIDER_CACHE.md, temp/, logs/, scripts/ excluding scripts/permanent/). If `.gitignore` does not exist, I'll create it from the template.
 >
-> **Total**: about 19 new files, 1 modified or created.
+> **Total**: about 20 new files for `markdown-files` (19 for hybrid providers), 1 modified or created.
 
 If `AGENTS.md` **already exists** at the workspace root, mention it explicitly in the plan:
 
@@ -175,7 +184,7 @@ For each file, fetch the source template (per Q6), substitute placeholders, writ
 |---|---|---|
 | `AGENTS.md` | `templates/AGENTS.md.template` | `{{PROJECT_NAME}}`, `{{DESCRIPTION}}`, `{{STACK}}` |
 | `CLAUDE.md` | `templates/CLAUDE.md.template` | `{{PROJECT_NAME}}` if present |
-| `pith-framework/CONFIG.md` | `templates/CONFIG.md.template` | `{{PROVIDER}}`, `{{CURRENT_USER}}` (if multi-user), connection settings (if hybrid — uncomment the relevant block and fill values) |
+| `pith-framework/CONFIG.md` | `templates/CONFIG.md.template` | `{{PROVIDER}}`, `{{CURRENT_USER}}` (always), connection settings (if hybrid — uncomment the relevant block and fill values) |
 | `pith-framework/METHODOLOGY.yaml` | `methodologies/default/MANIFEST.yaml` | none — copy verbatim |
 | `pith-framework/SYSTEM.yaml` | `templates/SYSTEM.yaml.template` | `{{PROJECT_NAME}}`, `{{DESCRIPTION}}`, `{{STACK}}` |
 | `pith-framework/framework/ENGINE.md` | `ENGINE.md` (root of canonical repo) | none |
@@ -184,6 +193,7 @@ For each file, fetch the source template (per Q6), substitute placeholders, writ
 | `pith-framework/TESTING_METHODOLOGY.md` | `templates/TESTING_METHODOLOGY.md.template` | `{{PROJECT_NAME}}` |
 | `pith-framework/CREDENTIALS.md` | `templates/CREDENTIALS.md.template` | `{{PROJECT_NAME}}` |
 | `pith-framework/LESSONS_LEARNED.md` | `templates/LESSONS_LEARNED.md.template` | `{{PROJECT_NAME}}` |
+| `pith-framework/projects/{current_user}/_INDEX.md` | `templates/PROJECT_INDEX.md.template` | none — markdown-files provider only; create the parent directory first |
 | `pith-framework/providers/markdown-files/MAPPING.md` | `providers/markdown-files/MAPPING.md` | none |
 | `pith-framework/providers/markdown-files/SETUP.md` | `providers/markdown-files/SETUP.md` | none |
 | `pith-framework/providers/clickup/MAPPING.md` | `providers/clickup/MAPPING.md` | none |
@@ -202,29 +212,30 @@ If a source provider file is missing in the cloned repo or returns 404 in downlo
 
 Fetch all of these. The provider URLs cover the three providers — fetch them all (see the "always copy all three providers" rule above).
 
-> **Note for forks**: the URLs below point to the canonical `guachoxx/pith-framework` repo on the `main` branch. If the user is working from a fork or a different branch, replace `guachoxx/pith-framework` with `<owner>/<repo>` (and `main` with the branch name) in every URL. If unsure, ask the user before fetching.
+> **Note for forks**: the URLs below point to the canonical `guachoxx/pith-framework-ai` repo on the `main` branch. If the user is working from a fork or a different branch, replace `guachoxx/pith-framework-ai` with `<owner>/<repo>` (and `main` with the branch name) in every URL. If unsure, ask the user before fetching.
 
 ```
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/AGENTS.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/CLAUDE.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/CONFIG.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/.gitignore.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/methodologies/default/MANIFEST.yaml
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/SYSTEM.yaml.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/ARCHITECTURE.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/BUILD_COMMANDS.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/TESTING_METHODOLOGY.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/CREDENTIALS.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/templates/LESSONS_LEARNED.md.template
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/ENGINE.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/markdown-files/MAPPING.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/markdown-files/SETUP.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/clickup/MAPPING.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/clickup/MAPPING_BOOT.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/clickup/SETUP.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/notion/MAPPING.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/notion/MAPPING_BOOT.md
-https://raw.githubusercontent.com/guachoxx/pith-framework/main/providers/notion/SETUP.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/AGENTS.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/CLAUDE.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/CONFIG.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/.gitignore.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/methodologies/default/MANIFEST.yaml
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/SYSTEM.yaml.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/ARCHITECTURE.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/BUILD_COMMANDS.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/TESTING_METHODOLOGY.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/CREDENTIALS.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/LESSONS_LEARNED.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/templates/PROJECT_INDEX.md.template
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/ENGINE.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/markdown-files/MAPPING.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/markdown-files/SETUP.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/clickup/MAPPING.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/clickup/MAPPING_BOOT.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/clickup/SETUP.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/notion/MAPPING.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/notion/MAPPING_BOOT.md
+https://raw.githubusercontent.com/guachoxx/pith-framework-ai/main/providers/notion/SETUP.md
 ```
 
 If a URL returns 404 (provider file genuinely does not exist in the canonical repo), skip that single file and continue. Do not abort the whole bootstrap for a missing optional file.
@@ -251,7 +262,11 @@ If `.gitignore` does not exist, create it with the template contents.
 ### Provider-specific notes
 
 **`markdown-files`** *(default)*:
-- No additional setup. Project documents live on disk under `pith-framework/projects/{project-name}/` once the user creates them.
+- Create an empty work unit index from `templates/PROJECT_INDEX.md.template`.
+  - Target: `pith-framework/projects/{current_user}/_INDEX.md`
+  - This applies to both single-user and multi-user installs because `CONFIG.md` always defines `current_user`.
+  - Do not create `pith-framework/projects/_INDEX.md` during bootstrap unless the user explicitly asks for a team overview or legacy flat fallback.
+- Project documents live on disk under `pith-framework/projects/{current_user}/{project-name}/` once the user creates them.
 - Skip `PROVIDER_CACHE.md` — not needed.
 
 **`clickup`** *(hybrid)*:
@@ -269,7 +284,7 @@ If `.gitignore` does not exist, create it with the template contents.
 After all files are written:
 
 1. Read `AGENTS.md` you just created. Sanity-check it: is the System Overview filled in, are the placeholders gone?
-2. Run the **Boot Checklist** as defined in `AGENTS.md`. The checklist has 4 rows for `markdown-files` provider, 6 rows for hybrid providers. For each row, confirm the file exists and the listed field is present.
+2. Run the **Boot Checklist** as defined in `AGENTS.md`. The checklist has 5 applicable rows for `markdown-files` provider and 6 applicable rows for hybrid providers. For each row, confirm the file exists and the listed field is present.
 3. Report results to the user:
    - Success: "Boot Checklist passed (X/X). Pith Framework is deployed and ready to use."
    - Partial failure: "Row N failed because Y." Diagnose, propose a fix, retry that row only.

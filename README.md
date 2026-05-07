@@ -69,6 +69,8 @@ The agent asks a few questions (project identity, provider choice, etc.), genera
    cp templates/AGENTS.md.template    your-project/AGENTS.md
    cp templates/CLAUDE.md.template    your-project/CLAUDE.md
    cp templates/CONFIG.md.template    your-project/pith-framework/CONFIG.md
+   mkdir -p your-project/pith-framework/projects
+   cp templates/PROJECT_INDEX.md.template your-project/pith-framework/projects/_INDEX.md
    cat templates/.gitignore.template >> your-project/.gitignore
    ```
 
@@ -95,6 +97,20 @@ The agent asks a few questions (project identity, provider choice, etc.), genera
 > **Want to see what a real project looks like?** Check out the [example/](example/) directory — a complete auth-refactor project mid-execution.
 > **New to the framework?** Read [docs/HUMANS_START_HERE.md](docs/HUMANS_START_HERE.md) for the full guide on daily workflow, distillation, and project documents.
 
+## Extensions
+
+The framework can be used with plain repo files only, but `extensions/` provides optional agent-specific accelerators.
+
+| Path | What it contains | Use when |
+|------|------------------|----------|
+| `extensions/claude-code/plugin/` | Claude Code plugin packaging: Pith skills, writer/explorer agents, hooks, and eval harness | You want the full Claude Code plugin experience |
+| `extensions/skills/core-skills/` | Standalone copies of the core Pith skills: `boot`, `consolidate`, `status`, `new-project`, `close-project` | You want to install Pith skills directly into an agent skill directory without the Claude Code plugin |
+| `extensions/skills/useful-skills/` | Optional general-purpose skills: `lm-studio-expert`, `local-agent`, `user-docs` | You want extra workflow helpers alongside Pith |
+
+The `core-skills` copies mirror `extensions/claude-code/plugin/src/skills/`. Keep both in sync when changing core skill behavior.
+
+To install standalone skills, copy the selected skill directories into your agent's skills directory (for example `$CODEX_HOME/skills` for Codex or `~/.claude/skills` for Claude Code).
+
 ## Repository Structure
 
 ```
@@ -116,6 +132,7 @@ The agent asks a few questions (project identity, provider choice, etc.), genera
 │   ├── TESTING_METHODOLOGY.md.template ← Testing strategy skeleton
 │   ├── CREDENTIALS.md.template         ← Credentials skeleton (gitignored)
 │   ├── LESSONS_LEARNED.md.template     ← Lessons learned skeleton
+│   ├── PROJECT_INDEX.md.template       ← Empty markdown-files work unit index
 │   └── .gitignore.template             ← Lines to add to .gitignore
 ├── methodologies/
 │   ├── README.md                       ← What methodologies are, how to create one
@@ -128,7 +145,18 @@ The agent asks a few questions (project identity, provider choice, etc.), genera
 │   ├── clickup/                        ← ClickUp Docs and Tasks
 │   └── notion/                         ← Notion Pages and Databases
 ├── extensions/
-│   └── claude-code/plugin/             ← Claude Code plugin (optional — skills, agents, hooks)
+│   ├── claude-code/plugin/             ← Claude Code plugin (skills, agents, hooks, evals)
+│   └── skills/                         ← Standalone skills
+│       ├── core-skills/                ← Pith skills copied from the plugin source
+│       │   ├── boot/
+│       │   ├── consolidate/
+│       │   ├── status/
+│       │   ├── new-project/
+│       │   └── close-project/
+│       └── useful-skills/              ← Optional helper skills
+│           ├── lm-studio-expert/
+│           ├── local-agent/
+│           └── user-docs/
 └── example/                            ← Worked end-to-end project (ShopFast auth-refactor)
 ```
 

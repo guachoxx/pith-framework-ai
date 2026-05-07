@@ -30,3 +30,5 @@ clickup_search(filters: {
 ```
 
 Do NOT add `keywords` — see API Limitation #5.
+
+Use the Project Index task metadata for fast-path listing. Show and sort by the task's `dateUpdated` value as `Last updated`; do not read project Doc Pages just to list active projects.

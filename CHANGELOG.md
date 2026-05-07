@@ -1,5 +1,27 @@
 # Changelog
 
+## v2.0.1 — 2026-05-07
+
+Canonical alignment and standalone skills.
+
+### Changed
+- Updated canonical GitHub references to `guachoxx/pith-framework-ai`.
+- Aligned core skills with the engine methodology contract instead of default-methodology assumptions.
+- Added fast paths for no-argument boot/status, including direct `_INDEX.md` resolution for `markdown-files`.
+- Clarified `ENGINE.md` as contract source and `pith-boot` as procedural boot source when available.
+- Updated default close protocol to preserve `TECHNICAL_REPORT`, `SPECIFICATIONS`, and `TESTING`.
+- Reorganized `extensions/skills` into `core-skills` and `useful-skills` for standalone skill installation.
+
+### Fixed
+- Fixed stale raw GitHub URLs in `BOOTSTRAP.md`.
+- Fixed ShopFast example `SYSTEM.yaml` and `AGENTS.md` to match current templates and boot semantics.
+- Fixed provider/cache assumptions across `pith-boot`, `pith-status`, `pith-new-project`, `pith-close-project`, and `pith-consolidate`.
+- Fixed `pith-writer`/`pith-explorer` instructions so they no longer assume unavailable MCP tools or fixed documentation layouts.
+
+### Notes
+- Standalone core skills mirror the Claude Code plugin skill sources and should remain synchronized.
+- Full LLM trigger evals were not run; static and targeted validation checks were performed.
+
 ## v2.0 — 2026-04-18
 
 Public release of Pith Framework.

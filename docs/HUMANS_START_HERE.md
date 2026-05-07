@@ -47,7 +47,7 @@ The engine never changes. The methodology is chosen per team. System knowledge i
 You don't need to do anything special. The agent reads `AGENTS.md` on startup, then follows the 3-phase boot sequence:
 
 1. **Read** `AGENTS.md` — system overview, invariants, context budget.
-2. **Phase 1** — Parallel read of all config: `CONFIG.md` (provider, your identity), `METHODOLOGY.yaml` (how work is organized), `SYSTEM.yaml` (documentation index). For hybrid providers (ClickUp, Notion, etc.) the agent also reads `providers/{provider}/MAPPING_BOOT.md` and `PROVIDER_CACHE.md` in the same batch.
+2. **Phase 1** — Two parallel batches: first the static boot files (`CONFIG.md`, `METHODOLOGY.yaml`, `SYSTEM.yaml`), then provider-specific files after the agent knows the configured provider. For hybrid providers (ClickUp, Notion, etc.) the second batch reads `providers/{provider}/MAPPING_BOOT.md` and `PROVIDER_CACHE.md`; for `markdown-files`, it skips those files.
 3. **Phase 2** — Apply `resource_hints` from METHODOLOGY.yaml: load any reference docs that match the task area before acting.
 4. **Phase 3** — Ready. The agent reads a project's CURRENT STATUS only when you ask to work on it — not all projects upfront.
 

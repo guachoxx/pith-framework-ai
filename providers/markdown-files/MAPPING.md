@@ -43,6 +43,17 @@ One file per code module, placed alongside the code it describes.
 
 Naming: kebab-case for project directories (e.g., `auth-refactor/`, `api-migration/`).
 
+## Project Index Schema
+
+Fast-path boot and status commands read only `_INDEX.md`; they do not read each project's entry point just to list or sort work units. Every markdown-files project index must use this minimum schema:
+
+```markdown
+| Project | State | Owner | Last updated | Branch | Summary |
+|---------|-------|-------|--------------|--------|---------|
+```
+
+`Last updated` is index metadata used for fast-path ordering. Update it whenever the work unit's entry point is updated. It should match the entry point's `last_updated` field when practical, but the index remains the source used for no-argument listing.
+
 ## Project Documents
 
 | Framework document | Persisted as |

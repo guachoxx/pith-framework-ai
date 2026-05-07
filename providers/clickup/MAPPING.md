@@ -145,6 +145,7 @@ Each project has a corresponding task in the "Project Index" List. This task use
 |---|---|---|
 | Status | **Native status** (configured on List/Space) | Project lifecycle status |
 | Assignee | **Native assignee** | Project owner |
+| Updated | **Native updated timestamp** (`dateUpdated`) | Fast-path `Last updated` metadata for listing/sorting |
 | Description | **Native text** | Structured metadata (see format below) |
 
 **Required statuses** (must be configured manually on the Project Index List or Space):
@@ -165,6 +166,8 @@ Each project has a corresponding task in the "Project Index" List. This task use
 **Started**: YYYY-MM
 **Summary**: One-line project description
 ```
+
+Fast-path boot/status uses the Project Index task metadata for `Last updated` (the task's `dateUpdated` value). Do not read project Pages just to sort or list projects. When an agent updates a project's entry point, it should also touch/update the Project Index task metadata when practical so the fast-path timestamp remains meaningful.
 
 **Recommended query pattern** to list all projects from the Project Index:
 

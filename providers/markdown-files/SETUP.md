@@ -30,6 +30,15 @@ your-project/
         └── _INDEX.md                  ← Project index
 ```
 
+Create `_INDEX.md` from `templates/PROJECT_INDEX.md.template`. The index must include the fast-path metadata used by boot/status:
+
+```markdown
+| Project | State | Owner | Last updated | Branch | Summary |
+|---------|-------|-------|--------------|--------|---------|
+```
+
+`Last updated` is updated when the project's entry point is updated, so agents can list and sort active work units without reading every project document.
+
 ### 2. Edit AGENTS.md
 
 Replace the `## System Overview` section with 3-5 lines about your system:
@@ -95,7 +104,7 @@ Add `pith-framework/CONFIG.md` to `.gitignore` so each user keeps their own iden
 ```
 pith-framework/projects/
 └── alice/
-    └── _INDEX.md          ← Create with project name, status, branch columns
+    └── _INDEX.md          ← Create from PROJECT_INDEX.md.template
 ```
 
 ### 3. Migration from single-user

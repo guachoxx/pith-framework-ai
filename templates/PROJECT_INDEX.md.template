@@ -2,4 +2,3 @@
 
 | Project | State | Owner | Last updated | Branch | Summary |
 |---------|-------|-------|--------------|--------|---------|
-| auth-refactor | IN_PROGRESS | Alex | 2026-02-20 | feature/jwt-auth | Migrate session auth to JWT |

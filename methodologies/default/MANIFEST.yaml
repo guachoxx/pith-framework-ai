@@ -102,16 +102,18 @@ conventions:
     rule: "Only artifacts listed in `survives` are preserved when a work unit closes. All others are discarded. Artifacts in `survives_if_present` are preserved only when they exist and have content."
     survives:
       - TECHNICAL_REPORT                        # Always preserved as deliverable
+      - SPECIFICATIONS                          # Preserve requirements and acceptance criteria
+      - TESTING                                 # Preserve validation evidence and test results
     survives_if_present:
       - CHANGELOG                               # Preserved only if it has content
     discarded:
       - CURRENT_STATUS
-      - SPECIFICATIONS
       - TECHNICAL_ANALYSIS
       - PLAN
-      - TESTING
     actions:
       technical_report: maintain_as_deliverable   # → docs/ or permanent location
+      specifications: maintain_as_reference
+      testing: maintain_as_validation_record
       changelog: move_to_changelog_root_if_applies
       project_folder: delete
       module_context: maintain_always             # Code context, not project context

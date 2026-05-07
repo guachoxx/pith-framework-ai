@@ -8,30 +8,47 @@
 
 ## Boot Sequence
 
+If the `pith-boot` skill is available, it is the procedural source of truth for executing boot. This section is a repo-local summary/fallback and must not override the skill.
+
+> 📌 **Contract source**: `ENGINE.md` defines the framework boot invariants and methodology contract. **Execution source**: `pith-boot` defines the procedural boot flow when available. Keep this summary aligned with both.
+
 **Mandatory Boot Rules**:
 1. Every step and rule is **MANDATORY**.
 2. The main agent executes ALL boot reads. Never delegate boot reads to subagents — the main agent needs this information first-hand to operate correctly.
 3. Do not perform any other action until boot sequence is completed.
 
-### Phase 1 — Load all config (single parallel read)
+### Phase 1 — Load boot context (two parallel batches)
 
-The list of boot files is static and known. Read ALL of them in a single parallel call:
+Provider-specific files depend on the `provider` field in `CONFIG.md`, so boot uses two ordered batches. Within each batch, read files in parallel when possible.
 
+#### Phase 1a — Static boot batch
+
+Read ALL of these files in a single parallel call:
+
+- `AGENTS.md` — system overview, invariants, context budget, on-disk resource map.
 - `pith-framework/CONFIG.md` — provider, user identity, connection settings.
-- `pith-framework/METHODOLOGY.yaml` — active methodology rules (states, artifacts, distillation, conventions). Contains `resource_hints` that determine what to load before acting. If missing or malformed: inform the user which fields are missing. Do not assume defaults.
+- `pith-framework/METHODOLOGY.yaml` — active methodology rules (states, artifacts, distillation, optional conventions). If missing or malformed: inform the user which engine-contract fields are missing. Do not assume defaults.
 - `pith-framework/SYSTEM.yaml` — system documentation index (what docs exist and how to load them). Do NOT load document content here — only register what's available.
 
-> **Note**: this example uses the `markdown-files` provider. Hybrid providers (ClickUp, Notion, etc.) additionally read `pith-framework/providers/{provider}/MAPPING_BOOT.md` and `pith-framework/PROVIDER_CACHE.md` at this phase.
+#### Phase 1b — Provider boot batch
 
-### Phase 2 — Resource hints (at boot time)
+> **ShopFast provider**: this example uses `markdown-files`, so skip `pith-framework/providers/{provider}/MAPPING_BOOT.md` and `pith-framework/PROVIDER_CACHE.md`. Do not read `providers/markdown-files/MAPPING.md` during normal boot.
 
-When entering a project context (boot with argument), apply resource hints:
-  a. Scan ALL `resource_hints` from METHODOLOGY.yaml against the project's current phase and area
-  b. List every matching hint (document name) — do not skip any
-  c. Load ALL matched documents in a single batch (parallel if possible)
-  d. If a document fails to load, inform the user — do not silently continue without it
+> **Plain no-argument boot**: use the fast path. Read the project index directly: if `current_user` is set, use `pith-framework/projects/{current_user}/_INDEX.md`; otherwise use `pith-framework/projects/_INDEX.md`. Do not load resource hints, reference document content, provider mapping, or project entry points just to list active projects.
 
-During the session, resource hints serve as a **reference for the agent**: when starting work on a new area (e.g., switching from DB work to API integration), consult `resource_hints` and load relevant docs before proceeding.
+### Phase 2 — Resource hints (conditional)
+
+Do not run this phase for plain no-argument boot used to list active projects.
+
+Apply resource hints only when entering a work unit context or starting a concrete task area:
+  a. If `conventions.resource_hints` does not exist, continue without preloading hint-based documents.
+  b. If boot has an argument, first read the project entry point in Phase 3, then scan ALL hints against the project's current phase and area.
+  c. If the user starts a concrete task area after boot, scan ALL hints against that task area before acting.
+  d. List every matching hint (document name) — do not skip any.
+  e. Load ALL matched documents in a single batch (parallel if possible).
+  f. If a document fails to load, inform the user — do not silently continue without it.
+
+During the session, resource hints serve as a **reference for the agent** when present: when starting work on a new area (e.g., switching from DB work to API integration), consult `resource_hints` and load relevant docs before proceeding.
 
 ### Phase 3 — Ready
 
@@ -43,10 +60,11 @@ During the session, resource hints serve as a **reference for the agent**: when 
 |---|------|--------|
 | 1 | `AGENTS.md` | System overview, invariants, context budget present |
 | 2 | `CONFIG.md` | `provider` and `current_user` identified |
-| 3 | `METHODOLOGY.yaml` | `work_unit.label` exists, `resource_hints` registered |
+| 3 | `METHODOLOGY.yaml` | Engine contract valid: identity, work_unit entry point, states, always_update |
 | 4 | `SYSTEM.yaml` | `documents[]` registered (not loaded) |
-| 5 | `MAPPING_BOOT.md` | Provider API limitations and query patterns loaded (hybrid providers only) |
-| 6 | `PROVIDER_CACHE.md` | Workspace ID resolved, warm/cold start completed (hybrid providers only) |
+| 5 | Work unit index | `_INDEX.md` exists with Project/State/Owner/Last updated columns (markdown-files only) |
+| 6 | `MAPPING_BOOT.md` | Provider API limitations and query patterns loaded (hybrid providers only) |
+| 7 | `PROVIDER_CACHE.md` | Workspace ID resolved, warm/cold start completed (hybrid providers only) |
 
 If any row fails verification, stop and inform the user before proceeding.
 

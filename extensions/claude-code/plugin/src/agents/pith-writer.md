@@ -18,13 +18,14 @@ The parent agent will give you:
 
 ## What you do
 
-1. Write the content to the specified location using the appropriate tool:
+1. Write the content to the specified location using the appropriate tool available in this subagent:
    - For **file-based providers** (markdown-files): use Write to save the file at the specified path
-   - For **ClickUp**: use the ClickUp MCP tools to update the document page
-   - For **Notion**: use the Notion MCP tools to update the page/block
+   - For **ClickUp**: use ClickUp MCP tools only if the parent explicitly confirms those tools are available to this subagent
+   - For **Notion**: use Notion MCP tools only if the parent explicitly confirms those tools are available to this subagent
    - For other providers: follow the provider instructions given
-2. Verify the write succeeded (read back if possible, or check for errors)
-3. Return a structured result to the parent agent:
+2. If the provider requires external MCP tools that are not available to this subagent, do not improvise through Bash or fake success. Return `PITH_WRITE_FAIL` and say the parent agent must perform the write directly.
+3. Verify the write succeeded (read back if possible, or check for errors)
+4. Return a structured result to the parent agent:
    - Success: `PITH_WRITE_OK: [artifact-name]`
    - Failure: `PITH_WRITE_FAIL: [artifact-name] — [error description]`
    - Always include the artifact name so the parent can correlate parallel writes

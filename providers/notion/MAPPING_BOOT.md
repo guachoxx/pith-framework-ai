@@ -29,4 +29,6 @@ notion-fetch(id: "<project_index_database ID from PROVIDER_CACHE>")
 
 To filter by the current user in multi-user mode, apply a filter on the `Assignee` Person property.
 
+Use the Project Index database's `Last updated` property for fast-path listing and sorting. Do not read project sub-pages just to list active projects.
+
 Do NOT rely on the cache's `## Projects` section as a complete list — it is an ID reference for already-known projects. Always query the database live when listing active projects.

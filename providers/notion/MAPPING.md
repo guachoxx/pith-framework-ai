@@ -102,8 +102,11 @@ Module context **always lives on disk** regardless of provider. The agent reads 
 | Name | Title | Project name (kebab-case) |
 | Status | Select: PLANNING, IN_PROGRESS, TESTING, READY, RELEASED, ON_HOLD | Project status |
 | Assignee | Person | Project owner (multi-user mode) |
+| Last updated | Date | Fast-path listing/sorting metadata |
 
 Each project is a page (row) in this database. This replaces `_INDEX.md`. Additional properties (Branch, Started, Summary) can be added as needed using Notion's native property types (Text, Date, Text).
+
+Fast-path boot/status uses the Project Index row's `Last updated` property. Update it whenever the project's entry point is updated. Do not read project sub-pages just to sort or list projects.
 
 ## Project Documents
 

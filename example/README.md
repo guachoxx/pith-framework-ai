@@ -1,6 +1,6 @@
 # Example: Worked End-to-End Project
 
-This directory shows what a project looks like in practice using the **markdown-files** provider with the **default** methodology.
+This directory shows what a project looks like in practice using the **markdown-files** provider with the **default** methodology in single-user mode.
 
 ## Scenario
 

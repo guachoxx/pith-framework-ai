@@ -83,8 +83,11 @@ Inside the Teamspace, create a Database named `Project Index` with the following
 | Name | Title | Project name (kebab-case) |
 | Status | Select | `PLANNING`, `IN_PROGRESS`, `TESTING`, `READY`, `RELEASED`, `ON_HOLD` |
 | Assignee | Person | Project owner |
+| Last updated | Date | Fast-path listing/sorting metadata |
 
 Each project is a **page (row)** in this database. Project documents (CURRENT_STATUS, PLAN, etc.) are created as **sub-pages** inside each project page.
+
+Update `Last updated` whenever the project's entry point changes. This lets boot/status list and sort projects from the Project Index database without reading every project sub-page.
 
 #### Database template (recommended)
 

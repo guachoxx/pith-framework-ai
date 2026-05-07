@@ -25,11 +25,13 @@ This order is mandatory:
 1. Read `pith-framework/SYSTEM.yaml` to discover available documentation
 2. Identify which documents are relevant to the exploration target:
    - Module context files (e.g., `src/{module}/CLAUDE.md`)
-   - Architecture documentation
-   - Data model documentation
+   - Any entries in `SYSTEM.yaml.documents[]` whose `name`, `description`, `trigger`, `path`, or `location` match the target
+   - Data model documentation if `SYSTEM.yaml` declares a data model relevant to the target
    - Any other system docs that match the target area
-3. Read ALL relevant documentation before touching any source code
-4. Build a mental model of what the documentation says exists
+3. Do not assume a document is named ARCHITECTURE. Use whatever `SYSTEM.yaml` declares.
+4. Read ALL relevant documentation before touching any source code
+5. If `SYSTEM.yaml` has no relevant docs or no `documents[]` list, report that limitation clearly. Continue only if the parent request already authorized exploration without docs; otherwise return and ask the parent for direction.
+6. Build a mental model of what the documentation says exists
 
 ### Phase 2 — Explore code with documentation context
 
