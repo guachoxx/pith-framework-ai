@@ -2,7 +2,9 @@
 
 A protocol for structured project memory across LLM agents.
 
-> **TL;DR** — Pith makes your agent (Claude Code, Cursor, Copilot, etc.) remember your project across sessions. Clone this repo, run BOOTSTRAP, and your agent always knows where you left off. Three pillars: **what your project is** (`SYSTEM`), **how you work** (`METHODOLOGY`), **where the info lives** (`PROVIDER`).
+> **TL;DR** — Pith turns project knowledge and your chosen methodology into an operating memory protocol for AI agents. Agents boot into the current project state, load the right context only when needed through `resource_hints`, and distill work back into durable artifacts. Continuity lives with your project, not inside a single chat or tool.
+
+Pith is built around three portable layers: **what your project is** (`SYSTEM`), **how you work** (`METHODOLOGY`), and **where the information lives** (`PROVIDER`).
 
 Pith gives your AI agent persistent, structured memory that survives across sessions. Instead of losing context when a conversation ends, the agent distills what it learned into versioned artifacts — and picks up exactly where it left off next time.
 
@@ -10,11 +12,14 @@ Pith gives your AI agent persistent, structured memory that survives across sess
 
 **The pain it eliminates**: every new session, your agent forgets everything about your project — architecture, credentials, decisions made last week, what was half-done. You re-explain. Every time.
 
-**With Pith, three things change:**
+**With Pith, four things change:**
 
 - **Your agent picks up where you left off.** `CURRENT_STATUS` tells it what was done, what's next, and what's blocked — so you don't have to.
+- **The right context loads at the right moment.** `resource_hints` route the agent to the docs it needs before acting: architecture, module notes, API docs, build commands, testing strategy, credentials, or lessons learned. Boot stays small; work starts informed.
 - **What your team knows becomes what every agent knows.** Reference docs (ARCHITECTURE, BUILD_COMMANDS, LESSONS_LEARNED) live in one place. Switch from Claude Code to Cursor and the context comes with you. Onboard a junior and their agent has the same context the senior's agent has.
 - **Your methodology stops being oral tradition.** States, artifacts, distillation rules, and when-to-load-what conventions are declared in `METHODOLOGY.yaml` — the agent follows them automatically, even the new teammate's agent.
+
+This is the difference between "the agent has docs somewhere" and "the agent knows which docs matter right now."
 
 See the [example/](example/) directory for a real project mid-execution if you want to see this in practice before reading further.
 
